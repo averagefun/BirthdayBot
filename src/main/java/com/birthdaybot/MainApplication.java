@@ -1,4 +1,4 @@
-package main;
+package com.birthdaybot;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

@@ -3,11 +3,17 @@ package com.birthdaybot;
 import com.birthdaybot.commands.AddCommand;
 import com.birthdaybot.commands.BaseCommand;
 import com.birthdaybot.commands.StartCommand;
+import com.birthdaybot.exceptions.DayFormatException;
+import com.birthdaybot.exceptions.FutureDateException;
+import com.birthdaybot.exceptions.MonthFormatException;
+import com.birthdaybot.exceptions.YearFormatException;
+import com.birthdaybot.model.Status;
 import com.birthdaybot.model.User;
 import com.birthdaybot.repositories.UserRepository;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.Keyboard;
 import com.birthdaybot.utills.Store;
+import com.birthdaybot.utills.validators.Validator;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.MessageSource;
 import org.springframework.data.util.Pair;
@@ -26,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.zip.DataFormatException;
 
 
 @Slf4j
@@ -66,25 +73,30 @@ public class Bot extends TelegramLongPollingBot  {
         Long chatId = update.getMessage().getChatId();
 
         if(message!=null && message.hasText()){
+            System.out.println(update.getMessage().getFrom().getUserName() + " " + update.getMessage().getText());
             switch (message.getText()) {
                 case "/start":
                     StartCommand startCommand= (StartCommand) commands.get("/start");
                     startCommand.execute(dataService, chatId, userId, update.getMessage().getFrom().getUserName());
                     break;
                 case "/add", "Добавить день рождения \uD83D\uDEBE":
-
+                    dataService.updateStatusById(Status.BASE, userId);
+                    AddCommand addCommand= (AddCommand) commands.get("/add");
+                    addCommand.execute(dataService, chatId, userId, "");
                     break;
+                default:
+                    switch (dataService.getStatus(userId)) {
+                        case BASE -> {
+                            Store.addToSendQueue(chatId, "no command");
+                        }
+                        case NAME_WAITING, BIRTHDAY_WAITING -> {
+                            AddCommand addCommandforName= (AddCommand) commands.get("/add");
+                            addCommandforName.execute(dataService, chatId, userId, message.getText());
+                        }
+                    }
             }
 
         }
-        System.out.println(dataService.getStatus(userId));
-//        System.out.println(update.getMessage().getText());
-//        localizate_text("aboba", new Locale("ru"));
-//        SendMessage sm = new SendMessage();
-//        sm.setChatId(update.getMessage().getChatId());
-//        sm.setText("TEst");
-//        sm.setReplyMarkup(Keyboard.replyKeyboardMarkup());
-//        Store.addToSendQueue(sm);
     }
 
 

@@ -1,5 +1,6 @@
 package com.birthdaybot.commands;
 
+import com.birthdaybot.model.Status;
 import com.birthdaybot.model.User;
 import com.birthdaybot.services.DataService;
 
@@ -12,5 +13,6 @@ public class StartCommand extends BaseCommand{
             newUser.setUsername(text);
             dataService.addUser(newUser);
         }
+        dataService.updateStatusById(Status.BASE, userId);
     }
 }

@@ -24,4 +24,6 @@ public class User {
     @Column(name = "timezone")
     private Integer timezone=3;
 
+    @Column(name = "status")
+    private Status status=Status.BASE;
 }

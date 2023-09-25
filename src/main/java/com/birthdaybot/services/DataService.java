@@ -1,5 +1,6 @@
 package com.birthdaybot.services;
 
+import com.birthdaybot.model.Status;
 import com.birthdaybot.model.User;
 import com.birthdaybot.repositories.BirthdayRepository;
 import com.birthdaybot.repositories.UserRepository;
@@ -18,5 +19,13 @@ public class DataService {
 
     public void addUser(User user){
         userRepository.save(user);
+    }
+
+    public Status getStatus(Long userId){
+        return userRepository.getStatus(userId);
+    }
+
+    public boolean existUser(long userId){
+        return userRepository.existsById(userId);
     }
 }

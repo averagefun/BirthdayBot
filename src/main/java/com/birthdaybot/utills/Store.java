@@ -6,14 +6,16 @@ import com.birthdaybot.model.User;
 import lombok.Getter;
 import org.springframework.data.util.Pair;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 
 import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Store {
+
     @Getter
-    public static BlockingDeque<Pair<Long, Object>> queueToSend=new LinkedBlockingDeque<>();
+    private static BlockingDeque<Pair<Long, Object>> queueToSend=new LinkedBlockingDeque<>();
 
     public static HashMap<Long, Birthday> tempMap = new HashMap<>();
 
@@ -37,6 +39,10 @@ public class Store {
     }
 
     public static void addToSendQueue(SendMessage message){
+        queueToSend.add(Pair.of(Long.parseLong(message.getChatId()), message));
+    }
+
+    public static void addToSendQueue(DeleteMessage message){
         queueToSend.add(Pair.of(Long.parseLong(message.getChatId()), message));
     }
 }

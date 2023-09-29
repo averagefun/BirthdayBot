@@ -26,4 +26,7 @@ public class User {
 
     @Column(name = "status")
     private Status status=Status.BASE;
+
+    @Column(name = "lang")
+    private String lang;
 }

@@ -30,6 +30,10 @@ public class DataService {
         return userRepository.getUserById(userId);
     }
 
+    public String getLanguageCode(Long userId){
+        return userRepository.getLanguageCode(userId);
+    }
+
     public boolean existUser(long userId){
         return userRepository.existsById(userId);
     }
@@ -40,5 +44,8 @@ public class DataService {
 
     public void updateStatusById(Status status, Long id){
         userRepository.updateStatusById(status, id);
+    }
+    public void updateLangById(String lang, Long id){
+        userRepository.updateLangById(lang, id);
     }
 }

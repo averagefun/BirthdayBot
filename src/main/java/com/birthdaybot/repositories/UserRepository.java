@@ -22,8 +22,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.status = ?1 where u.id = ?2")
     int updateStatusById(Status status, Long id);
 
+    @Transactional
+    @Modifying
+    @Query("update User u set u.lang = ?1 where u.id = ?2")
+    void updateLangById(String lang, Long id);
+
+
+
     @Query("select u from User u where u.id = ?1")
     User getUserById(Long id);
+
+    @Query("select u.lang from User u where u.id = ?1")
+    String getLanguageCode(Long id);
+
+
 
 
 

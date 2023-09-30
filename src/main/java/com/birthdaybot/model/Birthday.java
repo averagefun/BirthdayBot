@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -26,7 +26,7 @@ public class Birthday {
     private String name;
 
     @Column(name = "date", nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private User owner;

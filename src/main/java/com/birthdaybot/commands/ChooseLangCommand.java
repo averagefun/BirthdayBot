@@ -24,6 +24,11 @@ public class ChooseLangCommand extends BaseCommand {
                 SendMessage sendMessage = new SendMessage(userId.toString(), localizate("changedLanguage", "en"));
                 sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup("en"));
                 Store.addToSendQueue(sendMessage);
+            }case "setEmoji"->{
+                dataService.updateLangById("em", userId);
+                SendMessage sendMessage = new SendMessage(userId.toString(), localizate("changedLanguage", "em"));
+                sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup("em"));
+                Store.addToSendQueue(sendMessage);
             }
         }
 

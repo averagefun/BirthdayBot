@@ -18,6 +18,7 @@ public class Keyboard extends TextProviderImpl {
     private static final InlineKeyboardButton INFO_BUTTON = new InlineKeyboardButton("Инфо \u2139");
     private static final InlineKeyboardButton SELECT_RUSSIAN_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "ru"));
     private static final InlineKeyboardButton SELECT_ENGLISH_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "uk"));
+    private static final InlineKeyboardButton SELECT_EMOJI_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "em"));
 
 
 
@@ -42,10 +43,12 @@ public class Keyboard extends TextProviderImpl {
     public static InlineKeyboardMarkup languageKeyboard(){
         SELECT_RUSSIAN_BUTTON.setCallbackData("setRussian");
         SELECT_ENGLISH_BUTTON.setCallbackData("setEnglish");
+        SELECT_EMOJI_BUTTON.setCallbackData("setEmoji");
         List<InlineKeyboardButton> rowInline1 = List.of(SELECT_RUSSIAN_BUTTON);
         List<InlineKeyboardButton> rowInline2 = List.of(SELECT_ENGLISH_BUTTON);
+        List<InlineKeyboardButton> rowInline3 = List.of(SELECT_EMOJI_BUTTON);
 
-        List<List<InlineKeyboardButton>> rowsInLine = List.of(rowInline1, rowInline2);
+        List<List<InlineKeyboardButton>> rowsInLine = List.of(rowInline1, rowInline2, rowInline3);
 
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         markupInline.setKeyboard(rowsInLine);
@@ -69,9 +72,11 @@ public class Keyboard extends TextProviderImpl {
     private static List<KeyboardRow> keyboardRows(String langCode) {
         List<KeyboardRow> rows = new ArrayList<>();
         //создаем список рядов кнопок из списка кнопок
-        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("addBirthday", langCode) + " \uD83D\uDEBE"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("showBirthday", langCode) + " \u26A7"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("share", langCode)+" \u27A1"), new KeyboardButton(localizate("info", langCode)+" \u2139"), new KeyboardButton(localizate("language", langCode) +  " " + localizate("flag", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("addBirthday", langCode) +" "+ localizate("addSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("showBirthday", langCode)+" "+localizate("showSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("share", langCode)+" "+localizate("shareSmile", langCode)),
+                new KeyboardButton(localizate("info", langCode)+" "+localizate("infoSmile", langCode)),
+                new KeyboardButton(localizate("language", langCode) +  " " + localizate("flag", langCode)))));
 
         return rows;
     }

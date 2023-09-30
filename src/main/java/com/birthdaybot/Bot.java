@@ -70,12 +70,12 @@ public class Bot extends TelegramLongPollingBot  {
                     StartCommand startCommand= (StartCommand) commands.get("/start");
                     startCommand.execute(dataService, chatId, userId, update.getMessage().getFrom().getUserName() + " " + update.getMessage().getFrom().getLanguageCode());
                     break;
-                case "/add", "Добавить день рождения \uD83D\uDEBE", "Add a birthday \uD83D\uDEBE":
+                case "/add", "Добавить день рождения \uD83D\uDEAE", "Add a birthday \uD83D\uDEAE", "✍ \uD83C\uDD95 \uD83D\uDC23":
                     dataService.updateStatusById(Status.BASE, userId);
                     AddCommand addCommand= (AddCommand) commands.get("/add");
                     addCommand.execute(dataService, chatId, userId, "");
                     break;
-                case "/lang", "Язык \ud83c\uddf7\ud83c\uddfa", "Language \ud83c\uddec\ud83c\udde7":
+                case "/lang", "Язык \ud83c\uddf7\ud83c\uddfa", "Language \ud83c\uddec\ud83c\udde7", "♻ \ud83d\ude00":
                     ChooseLangCommand chooseLangCommand = (ChooseLangCommand) commands.get("/lang");
                     chooseLangCommand.execute(dataService, chatId, userId, "");
                     break;
@@ -96,7 +96,7 @@ public class Bot extends TelegramLongPollingBot  {
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
             String data=update.getCallbackQuery().getData();
             switch (data){
-                case "setRussian", "setEnglish":
+                case "setRussian", "setEnglish", "setEmoji":
                     ChooseLangCommand chooseLangCommand = (ChooseLangCommand) commands.get("/lang");
                     chooseLangCommand.execute(dataService, chatId, userId, data);
                     break;

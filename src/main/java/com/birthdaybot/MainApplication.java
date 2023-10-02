@@ -23,7 +23,6 @@ public class MainApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(myTelegramBot);
-
     }
 
 }

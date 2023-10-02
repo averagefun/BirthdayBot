@@ -11,7 +11,7 @@ import java.util.Locale;
 @Configuration
 public class MessageConfig {
     //Путь к properties
-    @Bean("messageSource")
+    @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("language/messages");

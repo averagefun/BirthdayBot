@@ -2,35 +2,42 @@ package com.birthdaybot.commands;
 
 
 import com.birthdaybot.services.DataService;
-import com.birthdaybot.utills.Keyboard;
-import com.birthdaybot.utills.Store;
+import com.birthdaybot.utills.*;
+import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+@Component
 
 public class ChooseLangCommand extends BaseCommand {
     @Override
-    public void execute(DataService dataService, Long chatId, Long userId, String text) {
-        switch (text){
-            case ""->{
-                SendMessage sendMessage = new SendMessage(userId.toString(), localizate("chooseLanguage", dataService.getLanguageCode(userId)));
-                sendMessage.setReplyMarkup(Keyboard.languageKeyboard());
-                Store.addToSendQueue(sendMessage);
-            }case "setRussian"->{
-                dataService.updateLangById("ru", userId);
-                SendMessage sendMessage = new SendMessage(userId.toString(), localizate("changedLanguage", "ru"));
-                sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup("ru"));
-                Store.addToSendQueue(sendMessage);
-            }case "setEnglish"->{
-                dataService.updateLangById("en", userId);
-                SendMessage sendMessage = new SendMessage(userId.toString(), localizate("changedLanguage", "en"));
-                sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup("en"));
-                Store.addToSendQueue(sendMessage);
-            }case "setEmoji"->{
-                dataService.updateLangById("em", userId);
-                SendMessage sendMessage = new SendMessage(userId.toString(), localizate("changedLanguage", "em"));
-                sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup("em"));
-                Store.addToSendQueue(sendMessage);
+    public void execute(DataService dataService) throws InterruptedException {
+        Pair<String, Update> executePair = Store.getQueueToProcess().take();
+        Update update = executePair.getSecond();
+        Long userId = getUserId(update);
+        String text = executePair.getFirst();
+        if (text.isEmpty()) {
+            SendMessage sendMessage = new SendMessage(userId.toString(), localizate("chooseLanguage", dataService.getLanguageCode(userId)));
+            sendMessage.setReplyMarkup(Keyboard.languageKeyboard());
+            Store.addToSendQueue(sendMessage);
+        } else {
+            String locate = "";
+            switch (text) {
+                case "setRussian" -> {
+                    locate = "ru";
+                }
+                case "setEnglish" -> {
+                    locate = "en";
+                }
+                case "setEmoji" -> {
+                    locate = "em";
+                }
             }
+            dataService.updateLangById(locate, userId);
+            SendMessage sendMessage = new SendMessage(userId.toString(), localizate("changedLanguage", locate));
+            sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup(locate));
+            Store.addToSendQueue(sendMessage);
         }
-
     }
 }

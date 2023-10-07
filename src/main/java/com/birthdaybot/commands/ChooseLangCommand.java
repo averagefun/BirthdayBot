@@ -3,13 +3,14 @@ package com.birthdaybot.commands;
 
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.*;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-
+@Scope("singleton")//default
 public class ChooseLangCommand extends BaseCommand {
     @Override
     public void execute(DataService dataService) throws InterruptedException {

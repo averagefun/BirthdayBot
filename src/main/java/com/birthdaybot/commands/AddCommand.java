@@ -9,6 +9,7 @@ import com.birthdaybot.model.Status;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.Store;
 import com.birthdaybot.utills.validators.Validator;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.zip.DataFormatException;
 
 @Component
+@Scope("singleton")//default
 public class AddCommand extends BaseCommand{
 
     @Override

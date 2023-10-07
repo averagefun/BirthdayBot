@@ -3,6 +3,7 @@ package com.birthdaybot.commands;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.*;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.util.ArrayList;
 
 @Component
+@Scope("singleton")//default
 public class ShowCommand extends BaseCommand {
     @Override
     public void execute(DataService dataService) throws InterruptedException {

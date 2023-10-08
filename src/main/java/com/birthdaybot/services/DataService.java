@@ -22,6 +22,11 @@ public class DataService {
         this.userRepository = userRepository;
     }
 
+    public Long getShareCode(Long id){
+        User user = getUser(id);
+        return user.getShareCode();
+    }
+
     public void addUser(User user){
         userRepository.save(user);
     }

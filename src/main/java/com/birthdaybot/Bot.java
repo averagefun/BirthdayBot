@@ -44,6 +44,37 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${telegram.bot.name}")
     private String botUsername;
 
+    @Autowired
+    @Qualifier("startCommand")
+    private BaseCommand startCommand;
+
+    @Autowired
+    @Qualifier("addCommand")
+    private BaseCommand addCommand;
+
+    @Autowired
+    @Qualifier("chooseLangCommand")
+    private BaseCommand chooseLangCommand;
+
+    @Autowired
+    @Qualifier("showCommand")
+    private BaseCommand showCommand;
+
+    @Autowired
+    @Qualifier("settingsCommand")
+    private BaseCommand settingsCommand;
+
+    @Autowired
+    @Qualifier("shareCommand")
+    private BaseCommand shareCommand;
+
+    @Autowired
+    @Qualifier("backCommand")
+    private BaseCommand backCommand;
+
+    @Autowired
+    @Qualifier("timeZoneCommand")
+    private BaseCommand timeZoneCommand;
     public Bot(@Value("${telegram.bot.token}") String botToken) {
         super(botToken);
     }
@@ -59,39 +90,36 @@ public class Bot extends TelegramLongPollingBot {
             switch (message.getText()) {
                 case "/start":
                     Store.addToProcessQueue(update);
-                    BaseCommand startCommand = SpringConfig.getApplicationContext().getBean("startCommand", BaseCommand.class);
                     startCommand.execute(dataService);
                     break;
                 case "/add", "Добавить день рождения \uD83D\uDEAE", "Add a birthday \uD83D\uDEAE", "✍ \uD83C\uDD95 \uD83D\uDC23":
                     dataService.updateStatusById(Status.BASE, userId);
                     Store.addToProcessQueue(update);
-                    BaseCommand addCommand = SpringConfig.getApplicationContext().getBean("addCommand", BaseCommand.class);
                     addCommand.execute(dataService);
                     break;
                 case "/lang", "Язык \ud83c\uddf7\ud83c\uddfa", "Language \ud83c\uddec\ud83c\udde7", "♻ \ud83d\ude00":
-                    BaseCommand chooseLangCommand = SpringConfig.getApplicationContext().getBean("chooseLangCommand", BaseCommand.class);
                     Store.addToProcessQueue(update);
                     chooseLangCommand.execute(dataService);
                     break;
                 case "/show", "Показать дни рождения \uD83D\uDC41", "Show birthdays \uD83D\uDC41", "\uD83D\uDD22 \uD83C\uDF10 \uD83C\uDF82":
-                    BaseCommand showCommand = SpringConfig.getApplicationContext().getBean("showCommand", BaseCommand.class);
                     Store.addToProcessQueue(update);
                     showCommand.execute(dataService);
                     break;
                 case "/settings", "Настройки ⚙️", "Settings ⚙️", "⚙️":
-                    BaseCommand settingsCommand = SpringConfig.getApplicationContext().getBean("settingsCommand", BaseCommand.class);
                     Store.addToProcessQueue(update);
                     settingsCommand.execute(dataService);
                     break;
                 case "/back", "Назад \uD83D\uDD19", "Back \uD83D\uDD19", "\uD83D\uDD19":
-                    BaseCommand backCommand = SpringConfig.getApplicationContext().getBean("backCommand", BaseCommand.class);
                     Store.addToProcessQueue(update);
                     backCommand.execute(dataService);
                     break;
                 case "/share", "Поделиться ➡", "Share ➡", "\uD83E\uDD1D ↖️":
-                    BaseCommand shareCommand = SpringConfig.getApplicationContext().getBean("shareCommand", BaseCommand.class);
                     Store.addToProcessQueue(update);
                     shareCommand.execute(dataService);
+                    break;
+                case "/time", "Часовой пояс \uD83D\uDD51", "Time zone \uD83D\uDD51", "\uD83D\uDD51":
+                    Store.addToProcessQueue(update);
+                    timeZoneCommand.execute(dataService);
                     break;
                 case "/info", "Инфо ℹ", "Info ℹ", "ℹ":
                     Store.addToSendQueue(chatId, "in process");
@@ -103,8 +131,10 @@ public class Bot extends TelegramLongPollingBot {
                         }
                         case NAME_WAITING, BIRTHDAY_WAITING -> {
                             Store.addToProcessQueue(message.getText(),update);
-                            BaseCommand addCommandForName = SpringConfig.getApplicationContext().getBean("addCommand", BaseCommand.class);
-                            addCommandForName.execute(dataService);
+                            addCommand.execute(dataService);
+                        }case TIME_ZONE_WAITING -> {
+                            Store.addToProcessQueue(update);
+                            timeZoneCommand.execute(dataService);
                         }
                     }
             }
@@ -118,12 +148,10 @@ public class Bot extends TelegramLongPollingBot {
             Store.addToProcessQueue(text,update);
             switch (data) {
                 case "setRussian", "setEnglish", "setEmoji":
-                    BaseCommand chooseLangCommand = SpringConfig.getApplicationContext().getBean("chooseLangCommand", BaseCommand.class);
                     chooseLangCommand.execute(dataService);
                     deleteMessage(update.getCallbackQuery().getMessage());
                     break;
                 case "backToCalendar","showJanuary", "showFebruary", "showMarch", "showApril", "showMay", "showJune", "showJuly", "showAugust", "showSeptember", "showOctober", "showNovember", "showDecember": {
-                    BaseCommand showCommand = SpringConfig.getApplicationContext().getBean("showCommand", BaseCommand .class);
                     showCommand.execute(dataService);
                     break;
                 }
@@ -187,6 +215,8 @@ public class Bot extends TelegramLongPollingBot {
             }
         }).start();
     }
+
+
 
 
     @Override

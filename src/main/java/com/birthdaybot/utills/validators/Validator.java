@@ -1,8 +1,6 @@
 package com.birthdaybot.utills.validators;
 
-import com.birthdaybot.exceptions.DayFormatException;
-import com.birthdaybot.exceptions.FutureDateException;
-import com.birthdaybot.exceptions.MonthFormatException;
+import com.birthdaybot.exceptions.*;
 import lombok.SneakyThrows;
 
 import java.time.LocalDate;
@@ -55,5 +53,16 @@ public class Validator {
         LocalDate inputDate = LocalDate.of(year, month, day);
         LocalDate today = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         return today.isAfter(inputDate);
+    }
+
+
+    public static Integer validateTimeZone(String str){
+        int zone = Integer.parseInt(str);
+        if(zone<-12 || zone>12 ) throw new TimeZoneException();
+        return zone;
+    }
+
+    public static void validateName(String name){
+        if(name.length()>134) throw new LongNameException();
     }
 }

@@ -42,6 +42,13 @@ public class DataService {
     public String getLanguageCode(Long userId){
         return userRepository.getLanguageCode(userId);
     }
+    public Integer getTimeZone(Long userId){
+        return userRepository.getTimeZone(userId);
+    }
+
+    public void setTimeZone(Integer zone, Long userId){
+        userRepository.setTimeZone(zone, userId);
+    }
 
     public boolean existUser(long userId){
         return userRepository.existsById(userId);

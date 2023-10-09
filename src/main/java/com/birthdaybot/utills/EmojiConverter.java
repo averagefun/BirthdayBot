@@ -14,6 +14,7 @@ public class EmojiConverter {
             Map.entry('7', "7️⃣"),
             Map.entry('8', "8️⃣"),
             Map.entry('9', "9️⃣"),
+            Map.entry('-', "➖"),
             Map.entry(' ', " ")
 
     );

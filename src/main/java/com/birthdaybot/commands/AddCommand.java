@@ -6,19 +6,26 @@ import com.birthdaybot.exceptions.MonthFormatException;
 import com.birthdaybot.exceptions.YearFormatException;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.model.Status;
-import com.birthdaybot.model.User;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.Store;
 import com.birthdaybot.utills.validators.Validator;
+import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.zip.DataFormatException;
 
+@Component
 public class AddCommand extends BaseCommand{
 
     @Override
-    public void execute(DataService dataService, Long chatId, Long userId, String text) {
+    public void execute(DataService dataService) throws InterruptedException {
+        Pair<String, Update> executePair = Store.getQueueToProcess().take();
+        Update update = executePair.getSecond();
+        Long chatId = getChatId(update);
+        Long userId = getUserId(update);
+        String text = executePair.getFirst();
         Status curStatus = dataService.getStatus(userId);
         String userLocate = dataService.getLanguageCode(userId);
         switch (curStatus){

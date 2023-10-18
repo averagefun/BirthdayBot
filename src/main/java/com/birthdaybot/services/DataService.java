@@ -7,8 +7,12 @@ import com.birthdaybot.repositories.BirthdayRepository;
 import com.birthdaybot.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class DataService {
+
     private final BirthdayRepository birthdayRepository;
 
     private final UserRepository userRepository;
@@ -41,11 +45,17 @@ public class DataService {
     public void addBirthday(Birthday birthday){
         birthdayRepository.save(birthday);
     }
+    public void deleteBirthdayById(Long id){
+        birthdayRepository.deleteById(id);
+    }
 
     public void updateStatusById(Status status, Long id){
         userRepository.updateStatusById(status, id);
     }
     public void updateLangById(String lang, Long id){
         userRepository.updateLangById(lang, id);
+    }
+    public ArrayList<Birthday> findBirthdaysByOwnerId(Long id){
+        return birthdayRepository.findBirthdaysByOwnerId(id);
     }
 }

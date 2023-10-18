@@ -14,6 +14,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Override
     boolean existsById(Long aLong);
 
+    @Override
+    void deleteById(Long aLong);
+
     @Query("select u.status from User u where u.id = ?1")
     Status getStatus(Long id);
 

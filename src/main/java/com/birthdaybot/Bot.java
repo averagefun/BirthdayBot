@@ -78,6 +78,21 @@ public class Bot extends TelegramLongPollingBot {
                     Store.addToProcessQueue(update);
                     showCommand.execute(dataService);
                     break;
+                case "/settings", "Настройки ⚙️", "Settings ⚙️", "⚙️":
+                    BaseCommand settingsCommand = SpringConfig.getApplicationContext().getBean("settingsCommand", BaseCommand.class);
+                    Store.addToProcessQueue(update);
+                    settingsCommand.execute(dataService);
+                    break;
+                case "/back", "Назад \uD83D\uDD19", "Back \uD83D\uDD19", "\uD83D\uDD19":
+                    BaseCommand backCommand = SpringConfig.getApplicationContext().getBean("backCommand", BaseCommand.class);
+                    Store.addToProcessQueue(update);
+                    backCommand.execute(dataService);
+                    break;
+                case "/share", "Поделиться ➡", "Share ➡", "\uD83E\uDD1D ↖️":
+                    BaseCommand shareCommand = SpringConfig.getApplicationContext().getBean("shareCommand", BaseCommand.class);
+                    Store.addToProcessQueue(update);
+                    shareCommand.execute(dataService);
+                    break;
                 case "/info", "Инфо ℹ", "Info ℹ", "ℹ":
                     Store.addToSendQueue(chatId, "in process");
                     break;

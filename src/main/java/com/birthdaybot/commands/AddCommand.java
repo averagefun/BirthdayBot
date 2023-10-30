@@ -7,11 +7,12 @@ import com.birthdaybot.exceptions.YearFormatException;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.model.Status;
 import com.birthdaybot.services.DataService;
-import com.birthdaybot.utills.Store;
+import com.birthdaybot.utills.*;
 import com.birthdaybot.utills.validators.Validator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDate;
@@ -34,13 +35,17 @@ public class AddCommand extends BaseCommand{
             case BASE -> {
                 Store.createBirthday(dataService.getUser(userId));
                 dataService.updateStatusById(Status.NAME_WAITING, userId);
-                Store.addToSendQueue(chatId, localizate("enterName",userLocate));
+                SendMessage sm = new SendMessage(chatId.toString(), localizate("enterName",userLocate));
+                sm.setReplyMarkup(Keyboard.backButton(userLocate));
+                Store.addToSendQueue(sm);
             }case NAME_WAITING -> {
                 Birthday temp = Store.getBirthday(userId);
                 temp.setName(text);
                 Store.tempMap.put(userId,temp);
                 dataService.updateStatusById(Status.BIRTHDAY_WAITING, userId);
-                Store.addToSendQueue(chatId, localizate("enterDate",userLocate));
+                SendMessage sm = new SendMessage(chatId.toString(), localizate("enterDate",userLocate));
+                sm.setReplyMarkup(Keyboard.backButton(userLocate));
+                Store.addToSendQueue(sm);
             }case BIRTHDAY_WAITING -> {
                 try {
                     LocalDate birthday = Validator.parseDate(text);
@@ -49,7 +54,9 @@ public class AddCommand extends BaseCommand{
                     Store.tempMap.remove(userId);
                     dataService.updateStatusById(Status.BASE, userId);
                     dataService.addBirthday(temp);
-                    Store.addToSendQueue(chatId, localizate("successAdd", userLocate) + " " + temp.getName());
+                    SendMessage sm = new SendMessage(chatId.toString(), localizate("successAdd", userLocate) + " " + temp.getName());
+                    sm.setReplyMarkup(Keyboard.replyKeyboardMarkup(userLocate));
+                    Store.addToSendQueue(sm);
                 } catch (DayFormatException e) {
                     Store.addToSendQueue(chatId, localizate("incorrectDay",userLocate));
                     Store.addToSendQueue(chatId, localizate("enterDate", userLocate));

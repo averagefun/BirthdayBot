@@ -20,6 +20,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u.status from User u where u.id = ?1")
     Status getStatus(Long id);
 
+    @Query("select u.timezone from User u where u.id = ?1")
+    Integer getTimeZone(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.timezone = ?1 where u.id = ?2")
+    void setTimeZone(Integer timezone, Long id);
+
+
+
     @Transactional
     @Modifying
     @Query("update User u set u.status = ?1 where u.id = ?2")

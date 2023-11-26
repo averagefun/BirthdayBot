@@ -13,7 +13,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "users")
+@Table(name = "users",
+        indexes = {@Index(name = "i_birthday_index", columnList = "id, status")})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id

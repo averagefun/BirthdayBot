@@ -11,8 +11,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "birthday",
-        indexes = {@Index(name = "i_date_index", columnList = "date"),
-                @Index(name = "i_id_index", columnList = "id")})
+        indexes = {@Index(name = "i_date_index", columnList = "date")})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Birthday {
     @Id

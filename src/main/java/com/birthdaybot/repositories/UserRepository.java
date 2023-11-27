@@ -51,9 +51,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     String getLanguageCode(Long id);
 
 
-
-
-
-
-
 }

@@ -29,6 +29,14 @@ public class Texts {
 class TextsId implements Serializable {
     private String tag;
 
+    public TextsId() {
+    }
+
+    public TextsId(String tag, Long language_id) {
+        this.tag = tag;
+        this.language_id = language_id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,14 +48,6 @@ class TextsId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(tag, language_id);
-    }
-
-    public TextsId() {
-    }
-
-    public TextsId(String tag, Long language_id) {
-        this.tag = tag;
-        this.language_id = language_id;
     }
 
     private Long language_id;

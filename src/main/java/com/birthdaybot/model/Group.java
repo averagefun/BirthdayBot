@@ -18,6 +18,14 @@ public class Group
 
     @Column(name = "timeZone")
     private Integer timeZone;
+
+    @PrePersist
+    @PreUpdate
+    private void validateTimezone() {
+        if (timeZone <= -12 || timeZone >= 12) {
+            throw new IllegalStateException("Timezone must be between -12 and 12");
+        }
+    }
     @Column(name = "isBotAdmin")
     private Boolean isBotAdmin;
 

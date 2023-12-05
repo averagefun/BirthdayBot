@@ -2,6 +2,8 @@ package com.birthdaybot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,16 +22,12 @@ public class Support {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @Min(0)
+    @Max(100)
     @Column(name = "priority", nullable = false)
     private Integer priority;
 
-    @PrePersist
-    @PreUpdate
-    private void validateTimezone() {
-        if (priority < 0 || priority > 100) {
-            throw new IllegalStateException("Timezone must be between -12 and 12");
-        }
-    }
 
     @Column(name = "status_id", nullable = false)
     private Integer status;

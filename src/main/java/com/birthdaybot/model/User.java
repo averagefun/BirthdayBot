@@ -4,6 +4,8 @@ package com.birthdaybot.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,16 +26,10 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
+    @Min(-12)
+    @Max(12)
     @Column(name = "timezone")
     private Integer timezone=3;
-
-    @PrePersist
-    @PreUpdate
-    private void validateTimezone() {
-        if (timezone <= -12 || timezone >= 12) {
-            throw new IllegalStateException("Timezone must be between -12 and 12");
-        }
-    }
 
     @Column(name = "status")
     private Status status=Status.BASE;

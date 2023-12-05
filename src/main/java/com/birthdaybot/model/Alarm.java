@@ -2,6 +2,8 @@ package com.birthdaybot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +23,8 @@ public class Alarm {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Min(0)
+    @Max(1440)
     @Column(name = "time", nullable = false)
     private Integer time;
 

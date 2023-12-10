@@ -22,6 +22,15 @@ public class Support {
     private String content;
     @Column(name = "priority", nullable = false)
     private Integer priority;
+
+    @PrePersist
+    @PreUpdate
+    private void validateTimezone() {
+        if (priority < 0 || priority > 100) {
+            throw new IllegalStateException("Timezone must be between -12 and 12");
+        }
+    }
+
     @Column(name = "status_id", nullable = false)
     private Integer status;
 

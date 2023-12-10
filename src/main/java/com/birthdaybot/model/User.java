@@ -1,16 +1,13 @@
 package com.birthdaybot.model;
 
 
+import com.birthdaybot.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter

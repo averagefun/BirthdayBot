@@ -1,7 +1,7 @@
 package com.birthdaybot.services;
 
 import com.birthdaybot.model.Birthday;
-import com.birthdaybot.model.Status;
+import com.birthdaybot.model.enums.Status;
 import com.birthdaybot.model.User;
 import com.birthdaybot.repositories.BirthdayRepository;
 import com.birthdaybot.repositories.UserRepository;

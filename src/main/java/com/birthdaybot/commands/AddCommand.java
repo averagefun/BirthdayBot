@@ -5,7 +5,7 @@ import com.birthdaybot.exceptions.FutureDateException;
 import com.birthdaybot.exceptions.MonthFormatException;
 import com.birthdaybot.exceptions.YearFormatException;
 import com.birthdaybot.model.Birthday;
-import com.birthdaybot.model.Status;
+import com.birthdaybot.model.enums.Status;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.*;
 import com.birthdaybot.utills.validators.Validator;

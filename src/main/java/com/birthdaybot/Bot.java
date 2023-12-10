@@ -1,9 +1,8 @@
 package com.birthdaybot;
 
 import com.birthdaybot.commands.*;
-import com.birthdaybot.model.Status;
+import com.birthdaybot.model.enums.Status;
 import com.birthdaybot.services.DataService;
-import com.birthdaybot.utills.SpringConfig;
 import com.birthdaybot.utills.Store;
 import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.sql.Connection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

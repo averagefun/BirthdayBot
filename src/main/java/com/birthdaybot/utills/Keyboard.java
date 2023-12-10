@@ -2,7 +2,6 @@ package com.birthdaybot.utills;
 
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.utills.localization.TextProviderImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
 public class Keyboard extends TextProviderImpl {
 
     private static final InlineKeyboardButton SELECT_RUSSIAN_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "ru"));

@@ -5,32 +5,25 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name="birthday")
+@Table(name="alarm")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Birthday {
+public class Alarm {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_alarm_seq")
     @SequenceGenerator(
-            name = "custom_seq",
+            name = "custom_alarm_seq",
             allocationSize = 1
     )
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
+    @Column(name = "time", nullable = false)
+    private Integer time;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private User owner;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Group group;
+    private Birthday birthday;
 }

@@ -1,6 +1,6 @@
 package com.birthdaybot.commands;
 
-import com.birthdaybot.model.Status;
+import com.birthdaybot.model.enums.Status;
 import com.birthdaybot.model.User;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.*;

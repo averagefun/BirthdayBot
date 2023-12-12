@@ -1,6 +1,6 @@
 package com.birthdaybot.repositories;
 
-import com.birthdaybot.model.Status;
+import com.birthdaybot.model.enums.Status;
 import com.birthdaybot.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

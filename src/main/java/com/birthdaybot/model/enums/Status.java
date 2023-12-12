@@ -1,4 +1,4 @@
-package com.birthdaybot.model;
+package com.birthdaybot.model.enums;
 
 public enum Status {
     BASE,

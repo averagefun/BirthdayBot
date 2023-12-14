@@ -18,7 +18,7 @@ public class SettingsCommand extends BaseCommand {
         Long chatId = getChatId(update);
         Long userId = getUserId(update);
         String langCode = dataService.getLanguageCode(userId);
-        SendMessage sendMessage = new SendMessage(chatId.toString(), localizate("settings", langCode));
+        SendMessage sendMessage = new SendMessage(chatId.toString(), "settings");
         sendMessage.setReplyMarkup(Keyboard.settingsKeyboard(langCode));
         Store.addToSendQueue(sendMessage);
     }

@@ -9,12 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="memberPermission")
+@Table(name="member_permissions")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MemberPermission {
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
-    private Group group;
+    private GroupMember groupMember;
 
     @Column(name = "permission")
     private Permission permission;

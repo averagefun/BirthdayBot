@@ -1,5 +1,6 @@
 package com.birthdaybot.model;
 
+import com.birthdaybot.model.enums.SupportStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -17,8 +18,8 @@ public class Support {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private SupportStatus support;
+    @Column(name = "status", nullable = false)
+    private SupportStatus status = SupportStatus.OPEN;
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -27,9 +28,4 @@ public class Support {
     @Max(100)
     @Column(name = "priority", nullable = false)
     private Integer priority;
-
-
-    @Column(name = "status_id", nullable = false)
-    private Integer status;
-
 }

@@ -25,10 +25,9 @@ public class StartCommand extends BaseCommand{
             User newUser = new User();
             newUser.setId(userId);
             newUser.setUsername(username);
-            newUser.setLang(langCode);
             dataService.addUser(newUser);
         }
-        SendMessage sendMessage = new SendMessage(chatId.toString(), localizate("start", langCode));
+        SendMessage sendMessage = new SendMessage(chatId.toString(), "start");
         sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup(langCode));
         Store.addToSendQueue(sendMessage);
         dataService.updateStatusById(Status.BASE, userId);

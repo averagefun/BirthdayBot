@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class ShareCommand extends BaseCommand{
+public class ShareCommand extends BaseCommand {
     @Override
     public void execute(DataService dataService) throws InterruptedException {
         Pair<String, Update> executePair = Store.getQueueToProcess().take();
@@ -17,12 +17,12 @@ public class ShareCommand extends BaseCommand{
         Long userId = getUserId(update);
         String langCode = dataService.getLanguageCode(userId);
         User user = dataService.getUser(userId);
-        if(user.getShareCode()==null){
-            user.generateShareCode();
+        if (user.getShareCode() == null) {
+            user.setShareCode(user.getId() + (long) (Math.PI * 100000000));
         }
         dataService.addUser(user);
         Long shareCode = user.getShareCode();
-        Store.addToSendQueue(chatId, localizate("yourShareCode", langCode) + " " + shareCode);
+        Store.addToSendQueue(chatId, "yourShareCode" + " " + shareCode);
 
     }
 }

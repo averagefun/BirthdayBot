@@ -26,18 +26,11 @@ public class User {
     @Min(-12)
     @Max(12)
     @Column(name = "timezone")
-    private Integer timezone=3;
+    private Integer timezone = 3;
 
     @Column(name = "status")
-    private Status status=Status.BASE;
+    private Status status = Status.BASE;
 
-    @Column(name = "lang")
-    private String lang;
-
-    @Column(name = "shareCode")
+    @Column(name = "share_code")
     private Long shareCode;
-
-    public void generateShareCode(){
-       shareCode=id+(long)(Math.PI*100000000);
-    }
 }

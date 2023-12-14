@@ -1,10 +1,9 @@
 package com.birthdaybot.commands;
 
 import com.birthdaybot.services.DataService;
-import com.birthdaybot.utills.localization.TextProviderImpl;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public abstract class BaseCommand extends TextProviderImpl {
+public abstract class BaseCommand {
     public abstract void execute(DataService dataService) throws InterruptedException;
 
     Long getChatId(Update update){

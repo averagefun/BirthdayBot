@@ -15,12 +15,7 @@ import java.time.LocalDate;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Birthday {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_seq")
-    @SequenceGenerator(
-            name = "custom_seq",
-            allocationSize = 1
-    )
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)

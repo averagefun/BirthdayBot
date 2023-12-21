@@ -12,11 +12,11 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name="alarm")
+@Table(name="alarms")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Alarm {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_alarm_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_alarms_seq")
     @SequenceGenerator(
             name = "custom_alarm_seq",
             allocationSize = 1
@@ -28,5 +28,6 @@ public class Alarm {
     private LocalDate time;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "birthday_id", nullable = false)
     private Birthday birthday;
 }

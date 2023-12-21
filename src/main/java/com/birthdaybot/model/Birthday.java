@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "birthday",
+@Table(name = "birthdays",
         indexes = {@Index(name = "i_date_index", columnList = "date")})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Birthday {

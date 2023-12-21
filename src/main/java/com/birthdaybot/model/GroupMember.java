@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="groupMember")
+@Table(name="group_members")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class GroupMember {
     @Id

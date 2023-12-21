@@ -20,11 +20,11 @@ public class Group
 
     @Min(-12)
     @Max(12)
-    @Column(name = "timeZone")
+    @Column(name = "timezone")
     private Integer timeZone;
 
 
-    @Column(name = "isBotAdmin")
+    @Column(name = "is_bot_admin")
     private Boolean isBotAdmin;
 
 }

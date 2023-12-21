@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 
 
@@ -25,7 +26,7 @@ public class Alarm {
     private Long id;
 
     @Column(name = "time", nullable = false)
-    private LocalDate time;
+    private Instant time;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "birthday_id", nullable = false)

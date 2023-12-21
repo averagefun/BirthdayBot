@@ -1,16 +1,15 @@
-package com.birthdaybot.utills;
+package com.birthdaybot.configuration;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-//Class for training config
 @Configuration
 @ComponentScan("com.birthdaybot")//no needed
 public class SpringConfig {
 
-//    @Bean
+    //    @Bean
 //    public MessageConfig messageConfig(){
 //        return new MessageConfig();
 //    }

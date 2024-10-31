@@ -50,6 +50,9 @@ public class Bot extends TelegramLongPollingBot {
     @Qualifier("addCommand")
     private BaseCommand addCommand;
 
+    @Autowired
+    @Qualifier("chooseLangCommand")
+    private BaseCommand chooseLangCommand;
 
     @Autowired
     @Qualifier("showCommand")
@@ -87,32 +90,36 @@ public class Bot extends TelegramLongPollingBot {
                     Store.addToProcessQueue(update);
                     startCommand.execute(dataService);
                     break;
-                case "/add":
+                case "/add", "Добавить день рождения \uD83D\uDEAE", "Add a birthday \uD83D\uDEAE", "✍ \uD83C\uDD95 \uD83D\uDC23":
                     dataService.updateStatusById(Status.BASE, userId);
                     Store.addToProcessQueue(update);
                     addCommand.execute(dataService);
                     break;
-                case "/show":
+                case "/lang", "Язык \ud83c\uddf7\ud83c\uddfa", "Language \ud83c\uddec\ud83c\udde7", "♻ \ud83d\ude00":
+                    Store.addToProcessQueue(update);
+                    chooseLangCommand.execute(dataService);
+                    break;
+                case "/show", "Показать дни рождения \uD83D\uDC41", "Show birthdays \uD83D\uDC41", "\uD83D\uDD22 \uD83C\uDF10 \uD83C\uDF82":
                     Store.addToProcessQueue(update);
                     showCommand.execute(dataService);
                     break;
-                case "/settings":
+                case "/settings", "Настройки ⚙️", "Settings ⚙️", "⚙️":
                     Store.addToProcessQueue(update);
                     settingsCommand.execute(dataService);
                     break;
-                case "/back":
+                case "/back", "Назад \uD83D\uDD19", "Back \uD83D\uDD19", "\uD83D\uDD19":
                     Store.addToProcessQueue(update);
                     backCommand.execute(dataService);
                     break;
-                case "/share":
+                case "/share", "Поделиться ➡", "Share ➡", "\uD83E\uDD1D ↖️":
                     Store.addToProcessQueue(update);
                     shareCommand.execute(dataService);
                     break;
-                case "/time":
+                case "/time", "Часовой пояс \uD83D\uDD51", "Time zone \uD83D\uDD51", "\uD83D\uDD51":
                     Store.addToProcessQueue(update);
                     timeZoneCommand.execute(dataService);
                     break;
-                case "/info":
+                case "/info", "Инфо ℹ", "Info ℹ", "ℹ":
                     Store.addToSendQueue(chatId, "in process");
                     break;
                 default:
@@ -138,6 +145,10 @@ public class Bot extends TelegramLongPollingBot {
             String data = s[0];
             Store.addToProcessQueue(text,update);
             switch (data) {
+                case "setRussian", "setEnglish", "setEmoji":
+                    chooseLangCommand.execute(dataService);
+                    deleteMessage(update.getCallbackQuery().getMessage());
+                    break;
                 case "backToCalendar","showJanuary", "showFebruary", "showMarch", "showApril", "showMay", "showJune", "showJuly", "showAugust", "showSeptember", "showOctober", "showNovember", "showDecember": {
                     showCommand.execute(dataService);
                     break;
@@ -146,6 +157,14 @@ public class Bot extends TelegramLongPollingBot {
 
         }
     }
+
+    private void deleteMessage(Message message) {
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setMessageId(message.getMessageId());
+        deleteMessage.setChatId(message.getChatId());
+        Store.addToSendQueue(deleteMessage);
+    }
+
 
 
     @PostConstruct

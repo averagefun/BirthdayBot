@@ -31,6 +31,9 @@ public class User {
     @Column(name = "status")
     private Status status = Status.BASE;
 
+    @Column(name = "lang")
+    private String lang;
+
     @Column(name = "share_code")
     private Long shareCode;
 }

@@ -22,7 +22,7 @@ public class ShareCommand extends BaseCommand {
         }
         dataService.addUser(user);
         Long shareCode = user.getShareCode();
-        Store.addToSendQueue(chatId, "yourShareCode" + " " + shareCode);
+        Store.addToSendQueue(chatId, localizate("yourShareCode", langCode) + " " + shareCode);
 
     }
 }

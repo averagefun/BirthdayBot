@@ -17,7 +17,7 @@ public class BackCommand extends BaseCommand{
         Long chatId = getChatId(update);
         Long userId = getUserId(update);
         String langCode = dataService.getLanguageCode(userId);
-        SendMessage sendMessage = new SendMessage(chatId.toString(), "chooseCommand");
+        SendMessage sendMessage = new SendMessage(chatId.toString(), localizate("chooseCommand", langCode));
         sendMessage.setReplyMarkup(Keyboard.replyKeyboardMarkup(langCode));
         Store.addToSendQueue(sendMessage);
         dataService.updateStatusById(Status.BASE, userId);

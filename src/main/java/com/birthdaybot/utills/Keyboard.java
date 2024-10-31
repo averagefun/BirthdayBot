@@ -1,6 +1,7 @@
 package com.birthdaybot.utills;
 
 import com.birthdaybot.model.Birthday;
+import com.birthdaybot.utills.localization.TextProviderImpl;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -11,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Keyboard {
+public class Keyboard extends TextProviderImpl {
 
-    private static final InlineKeyboardButton SELECT_RUSSIAN_BUTTON = new InlineKeyboardButton("currentLanguage");
-    private static final InlineKeyboardButton SELECT_ENGLISH_BUTTON = new InlineKeyboardButton("currentLanguage");
-    private static final InlineKeyboardButton SELECT_EMOJI_BUTTON = new InlineKeyboardButton("currentLanguage");
+    private static final InlineKeyboardButton SELECT_RUSSIAN_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "ru"));
+    private static final InlineKeyboardButton SELECT_ENGLISH_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "uk"));
+    private static final InlineKeyboardButton SELECT_EMOJI_BUTTON = new InlineKeyboardButton(localizate("currentLanguage", "em"));
 
 
 
@@ -35,29 +36,29 @@ public class Keyboard {
     }
 
     public static InlineKeyboardMarkup calendarKeyboard(String locale) {
-        InlineKeyboardButton JANUARY_BUTTON = new InlineKeyboardButton("january");
+        InlineKeyboardButton JANUARY_BUTTON = new InlineKeyboardButton(localizate("january", locale));
         JANUARY_BUTTON.setCallbackData("showJanuary");
-        InlineKeyboardButton FEBRUARY_BUTTON = new InlineKeyboardButton("february");
+        InlineKeyboardButton FEBRUARY_BUTTON = new InlineKeyboardButton(localizate("february", locale));
         FEBRUARY_BUTTON.setCallbackData("showFebruary");
-        InlineKeyboardButton MARCH_BUTTON = new InlineKeyboardButton("march");
+        InlineKeyboardButton MARCH_BUTTON = new InlineKeyboardButton(localizate("march", locale));
         MARCH_BUTTON.setCallbackData("showMarch");
-        InlineKeyboardButton APRIL_BUTTON = new InlineKeyboardButton("april");
+        InlineKeyboardButton APRIL_BUTTON = new InlineKeyboardButton(localizate("april", locale));
         APRIL_BUTTON.setCallbackData("showApril");
-        InlineKeyboardButton MAY_BUTTON = new InlineKeyboardButton("may");
+        InlineKeyboardButton MAY_BUTTON = new InlineKeyboardButton(localizate("may", locale));
         MAY_BUTTON.setCallbackData("showMay");
-        InlineKeyboardButton JUNE_BUTTON = new InlineKeyboardButton("june");
+        InlineKeyboardButton JUNE_BUTTON = new InlineKeyboardButton(localizate("june", locale));
         JUNE_BUTTON.setCallbackData("showJune");
-        InlineKeyboardButton JULY_BUTTON = new InlineKeyboardButton("july");
+        InlineKeyboardButton JULY_BUTTON = new InlineKeyboardButton(localizate("july", locale));
         JULY_BUTTON.setCallbackData("showJuly");
-        InlineKeyboardButton AUGUST_BUTTON = new InlineKeyboardButton("august");
+        InlineKeyboardButton AUGUST_BUTTON = new InlineKeyboardButton(localizate("august", locale));
         AUGUST_BUTTON.setCallbackData("showAugust");
-        InlineKeyboardButton SEPTEMBER_BUTTON = new InlineKeyboardButton("september");
+        InlineKeyboardButton SEPTEMBER_BUTTON = new InlineKeyboardButton(localizate("september", locale));
         SEPTEMBER_BUTTON.setCallbackData("showSeptember");
-        InlineKeyboardButton OCTOBER_BUTTON = new InlineKeyboardButton("october");
+        InlineKeyboardButton OCTOBER_BUTTON = new InlineKeyboardButton(localizate("october", locale));
         OCTOBER_BUTTON.setCallbackData("showOctober");
-        InlineKeyboardButton NOVEMBER_BUTTON = new InlineKeyboardButton("november");
+        InlineKeyboardButton NOVEMBER_BUTTON = new InlineKeyboardButton(localizate("november", locale));
         NOVEMBER_BUTTON.setCallbackData("showNovember");
-        InlineKeyboardButton DECEMBER_BUTTON = new InlineKeyboardButton("december");
+        InlineKeyboardButton DECEMBER_BUTTON = new InlineKeyboardButton(localizate("december", locale));
         DECEMBER_BUTTON.setCallbackData("showDecember");
         List<InlineKeyboardButton> rowInline1 = List.of(DECEMBER_BUTTON, JANUARY_BUTTON, FEBRUARY_BUTTON);
         List<InlineKeyboardButton> rowInline2 = List.of(MARCH_BUTTON, APRIL_BUTTON, MAY_BUTTON);
@@ -84,9 +85,10 @@ public class Keyboard {
     private static List<KeyboardRow> keyboardRows(String langCode) {
         List<KeyboardRow> rows = new ArrayList<>();
         //создаем список рядов кнопок из списка кнопок
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("addBirthday" + " " + "addSmile"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("showBirthday" + " " + "showSmile"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("settings" + " " + "settingsEmoji"))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("addBirthday", langCode) + " " + localizate("addSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("showBirthday", langCode) + " " + localizate("showSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("settings", langCode) + " " + localizate("settingsEmoji", langCode)),
+                new KeyboardButton(localizate("language", langCode) + " " + localizate("flag", langCode)))));
         return rows;
     }
 
@@ -107,17 +109,17 @@ public class Keyboard {
     private static List<InlineKeyboardButton> getLastShowBirthdaysRow(String locate, ArrayList<Birthday> birthdays, Integer start, String month) {
         List<InlineKeyboardButton> rowInLine = new ArrayList<>();
         if (start >= 4) {
-            InlineKeyboardButton prevButton = new InlineKeyboardButton("⏪ " + "back");
+            InlineKeyboardButton prevButton = new InlineKeyboardButton("⏪ " + localizate("back", locate));
             prevButton.setCallbackData(month + ";" + (start - 5));
             rowInLine.add(prevButton);
         }
 
-        InlineKeyboardButton backButton = new InlineKeyboardButton("toCalendar" + " \ud83d\udcc5");
+        InlineKeyboardButton backButton = new InlineKeyboardButton(localizate("toCalendar", locate) + " \ud83d\udcc5");
         backButton.setCallbackData("backToCalendar");
         rowInLine.add(backButton);
 
         if (start + 5 < birthdays.size()) {
-            InlineKeyboardButton nextButton = new InlineKeyboardButton("next" + " ⏩");
+            InlineKeyboardButton nextButton = new InlineKeyboardButton(localizate("next", locate) + " ⏩");
             nextButton.setCallbackData(month + ";" + (start + 5));
             rowInLine.add(nextButton);
         }
@@ -134,7 +136,7 @@ public class Keyboard {
         String years;
         if (Objects.equals(locate, "em")) birthdayDate = EmojiConverter.convertedString(birthdayDate);
         birthdayDate += " " +
-                Store.monthMap.get(birthday.getDate().getMonthValue());
+                localizate(Store.monthMap.get(birthday.getDate().getMonthValue()), locate);
         if (birthday.getDate().getYear() != 1) {
             if (Objects.equals(locate, "em")) {
                 int year = birthday.getDate().getYear() % 100;
@@ -163,10 +165,10 @@ public class Keyboard {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
         //добавляем "клавиатуру"
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("share" + " " + "shareSmile"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("info" + " " + "infoSmile"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("tomeZone" + " " + "timeEmoji"))));
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("undo" + " " + "undoEmoji"))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("share", langCode) + " " + localizate("shareSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("info", langCode) + " " + localizate("infoSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("tomeZone", langCode) + " " + localizate("timeEmoji", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("undo", langCode) + " " + localizate("undoEmoji", langCode)))));
         replyKeyboardMarkup.setKeyboard(rows);
         return replyKeyboardMarkup;
     }
@@ -178,7 +180,7 @@ public class Keyboard {
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
-        rows.add(new KeyboardRow(List.of(new KeyboardButton("undo"+ " " + "undoEmoji"))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("undo", langCode) + " " + localizate("undoEmoji", langCode)))));
         replyKeyboardMarkup.setKeyboard(rows);
         return replyKeyboardMarkup;
     }

@@ -35,7 +35,7 @@ public class AddCommand extends BaseCommand {
             case BASE -> {
                 Store.createBirthday(dataService.getUser(userId));
                 dataService.updateStatusById(Status.NAME_WAITING, userId);
-                SendMessage sm = new SendMessage(chatId.toString(), "enterName");
+                SendMessage sm = new SendMessage(chatId.toString(), localizate("enterName", userLocate));
                 sm.setReplyMarkup(Keyboard.backButton(userLocate));
                 Store.addToSendQueue(sm);
             }
@@ -46,11 +46,11 @@ public class AddCommand extends BaseCommand {
                     temp.setName(text);
                     Store.tempMap.put(userId, temp);
                     dataService.updateStatusById(Status.BIRTHDAY_WAITING, userId);
-                    SendMessage sm = new SendMessage(chatId.toString(), "enterDate");
+                    SendMessage sm = new SendMessage(chatId.toString(), localizate("enterDate", userLocate));
                     sm.setReplyMarkup(Keyboard.backButton(userLocate));
                     Store.addToSendQueue(sm);
                 }catch (Exception e){
-                    SendMessage error = new SendMessage(userId.toString(), "longName");
+                    SendMessage error = new SendMessage(userId.toString(), localizate("longName", userLocate));
                     Store.addToSendQueue(error);
                 }
 
@@ -63,24 +63,24 @@ public class AddCommand extends BaseCommand {
                     Store.tempMap.remove(userId);
                     dataService.updateStatusById(Status.BASE, userId);
                     dataService.addBirthday(temp);
-                    SendMessage sm = new SendMessage(chatId.toString(), "successAdd" + " " + temp.getName());
+                    SendMessage sm = new SendMessage(chatId.toString(), localizate("successAdd", userLocate) + " " + temp.getName());
                     sm.setReplyMarkup(Keyboard.replyKeyboardMarkup(userLocate));
                     Store.addToSendQueue(sm);
                 } catch (DayFormatException e) {
-                    Store.addToSendQueue(chatId, "incorrectDay");
-                    Store.addToSendQueue(chatId, "enterDate");
+                    Store.addToSendQueue(chatId, localizate("incorrectDay", userLocate));
+                    Store.addToSendQueue(chatId, localizate("enterDate", userLocate));
                 } catch (MonthFormatException e) {
-                    Store.addToSendQueue(chatId, "incorrectMonth");
-                    Store.addToSendQueue(chatId, "enterDate");
+                    Store.addToSendQueue(chatId, localizate("incorrectMonth", userLocate));
+                    Store.addToSendQueue(chatId, localizate("enterDate", userLocate));
                 } catch (FutureDateException e) {
-                    Store.addToSendQueue(chatId, "futureDate");
-                    Store.addToSendQueue(chatId, "enterDate");
+                    Store.addToSendQueue(chatId, localizate("futureDate", userLocate));
+                    Store.addToSendQueue(chatId, localizate("enterDate", userLocate));
                 } catch (YearFormatException e) {
-                    Store.addToSendQueue(chatId, "incorrectYear");
-                    Store.addToSendQueue(chatId, "enterDate");
+                    Store.addToSendQueue(chatId, localizate("incorrectYear", userLocate));
+                    Store.addToSendQueue(chatId, localizate("enterDate", userLocate));
                 } catch (DataFormatException e) {
-                    Store.addToSendQueue(chatId, "incorrectDateFormat");
-                    Store.addToSendQueue(chatId, "enterDate");
+                    Store.addToSendQueue(chatId, localizate("incorrectDateFormat", userLocate));
+                    Store.addToSendQueue(chatId, localizate("enterDate", userLocate));
                 }
             }
         }

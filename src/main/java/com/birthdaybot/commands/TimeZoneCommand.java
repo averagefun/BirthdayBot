@@ -27,9 +27,9 @@ public class TimeZoneCommand extends BaseCommand{
             if(timeZone>0){
                 gmt+="+";
             }
-            SendMessage sendMessage = new SendMessage(userId.toString(), "timeZone" + " " +gmt+ timeZone);
+            SendMessage sendMessage = new SendMessage(userId.toString(), localizate("timeZone", userLocate) + " " +gmt+ timeZone);
             Store.addToSendQueue(sendMessage);
-            SendMessage sm2 = new SendMessage(userId.toString(), "newTimeZone");
+            SendMessage sm2 = new SendMessage(userId.toString(), localizate("newTimeZone", userLocate));
             Store.addToSendQueue(sm2);
             dataService.updateStatusById(Status.TIME_ZONE_WAITING, userId);
         }else {
@@ -42,14 +42,14 @@ public class TimeZoneCommand extends BaseCommand{
                 if(newTimeZone>0){
                     gmt+="+";
                 }
-                String response = "successTimeZone";
+                String response = localizate("successTimeZone", userLocate);
                 response += userLocate.equals("em") ? EmojiConverter.convertedString(newTimeZone.toString()) : " "+ gmt + newTimeZone;
                 message.setText(response);
                 dataService.updateStatusById(Status.BASE, userId);
             }catch (TimeZoneException e){
-                message.setText("timeZoneFormat");
+                message.setText(localizate("timeZoneFormat", userLocate));
             }catch (Exception e){
-                message.setText("wrongTimeZone");
+                message.setText(localizate("wrongTimeZone", userLocate));
             }
             finally {
                 Store.addToSendQueue(message);

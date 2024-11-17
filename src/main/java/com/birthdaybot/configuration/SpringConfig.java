@@ -2,11 +2,9 @@ package com.birthdaybot.configuration;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("com.birthdaybot")//no needed
 public class SpringConfig {
 
     //    @Bean

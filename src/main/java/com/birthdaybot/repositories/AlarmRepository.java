@@ -4,8 +4,10 @@ import com.birthdaybot.model.Alarm;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -22,6 +24,9 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     @Query("select a from Alarm a where a.time <= ?1")
     List<Alarm> findByTime(Instant time);
 
-
+    @Transactional
+    @Modifying
+    @Query("delete from Alarm a where a.birthday.id = :id")
+    int deleteByBirthdayId(Long id);
 
 }

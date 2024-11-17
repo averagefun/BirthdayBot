@@ -1,14 +1,14 @@
 package com.birthdaybot.commands;
 
-import com.birthdaybot.exceptions.DayFormatException;
-import com.birthdaybot.exceptions.FutureDateException;
-import com.birthdaybot.exceptions.MonthFormatException;
-import com.birthdaybot.exceptions.YearFormatException;
+import com.birthdaybot.exceptions.*;
+import com.birthdaybot.model.Alarm;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.model.enums.Status;
+import com.birthdaybot.services.AlarmService;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.*;
 import com.birthdaybot.utills.validators.Validator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
@@ -21,6 +21,8 @@ import java.util.zip.DataFormatException;
 @Component
 @Scope("singleton")//default
 public class AddCommand extends BaseCommand {
+    @Autowired
+    AlarmService alarmService;
 
     @Override
     public void execute(DataService dataService) throws InterruptedException {
@@ -28,12 +30,23 @@ public class AddCommand extends BaseCommand {
         Update update = executePair.getSecond();
         Long chatId = getChatId(update);
         Long userId = getUserId(update);
+        boolean isGroupMode = dataService.getIsGroupMode(userId);
+        boolean isGroupAdmin = dataService.getIsGroupAdmin(userId);
+        Long groupId;
+        if (!isGroupMode) {
+            groupId = userId;
+        } else {
+            groupId = dataService.getGroupIdByUserId(userId);
+        }
         String text = executePair.getFirst();
         Status curStatus = dataService.getStatus(userId);
         String userLocate = dataService.getLanguageCode(userId);
+        if (isGroupMode && !isGroupAdmin) {
+            throw new NoAdminRightsException(userId, userLocate);
+        }
         switch (curStatus) {
             case BASE -> {
-                Store.createBirthday(dataService.getUser(userId));
+                Store.createBirthday(dataService.getUser(userId), groupId);
                 dataService.updateStatusById(Status.NAME_WAITING, userId);
                 SendMessage sm = new SendMessage(chatId.toString(), localizate("enterName", userLocate));
                 sm.setReplyMarkup(Keyboard.backButton(userLocate));
@@ -62,9 +75,13 @@ public class AddCommand extends BaseCommand {
                     temp.setDate(birthday);
                     Store.tempMap.remove(userId);
                     dataService.updateStatusById(Status.BASE, userId);
-                    dataService.addBirthday(temp);
+                    dataService.addBirthdayAndAlarm(temp);
                     SendMessage sm = new SendMessage(chatId.toString(), localizate("successAdd", userLocate) + " " + temp.getName());
-                    sm.setReplyMarkup(Keyboard.replyKeyboardMarkup(userLocate));
+                    if (!isGroupMode) {
+                        sm.setReplyMarkup(Keyboard.replyKeyboardMarkup(userLocate));
+                    } else {
+                        sm.setReplyMarkup(Keyboard.replyKeyboardMarkupGroupMode(userLocate, true));
+                    }
                     Store.addToSendQueue(sm);
                 } catch (DayFormatException e) {
                     Store.addToSendQueue(chatId, localizate("incorrectDay", userLocate));

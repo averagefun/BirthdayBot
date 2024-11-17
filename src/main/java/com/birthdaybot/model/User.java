@@ -36,4 +36,13 @@ public class User {
 
     @Column(name = "share_code")
     private Long shareCode;
+
+    @Column(name = "group_id")
+    private Long groupId = 0L;
+
+    @Column(name = "is_group_admin")
+    private Boolean isGroupAdmin = false;
+
+    @Column(name = "is_group_mode")
+    private Boolean isGroupMode = false;
 }

@@ -70,6 +70,28 @@ public class Keyboard extends TextProviderImpl {
         return markupInline;
     }
 
+    public static ReplyKeyboardMarkup replyKeyboardMarkupGroupMode(String langCode, Boolean isAdmin) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        //следующие три строчки могут менять значение аргументов взависимости от ваших задач
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
+        //добавляем "клавиатуру"
+        replyKeyboardMarkup.setKeyboard(keyboardRowsGroupMode(langCode, isAdmin));
+        return replyKeyboardMarkup;
+    }
+
+    private static List<KeyboardRow> keyboardRowsGroupMode(String langCode, Boolean isAdmin) {
+        List<KeyboardRow> rows = new ArrayList<>();
+        //создаем список рядов кнопок из списка кнопок
+        if (isAdmin){
+            rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("addBirthday", langCode) + " " + localizate("addSmile", langCode)))));
+        }
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("showBirthday", langCode) + " " + localizate("showSmile", langCode)))));
+        rows.add(new KeyboardRow(List.of(new KeyboardButton(localizate("backToUserMode", langCode) + " " + localizate("undoEmoji", langCode)))));
+        return rows;
+    }
+
 
     public static ReplyKeyboardMarkup replyKeyboardMarkup(String langCode) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -184,6 +206,5 @@ public class Keyboard extends TextProviderImpl {
         replyKeyboardMarkup.setKeyboard(rows);
         return replyKeyboardMarkup;
     }
-
 
 }

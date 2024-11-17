@@ -1,6 +1,7 @@
 package com.birthdaybot.utills;
 
 import com.birthdaybot.exceptions.RestartServerException;
+import com.birthdaybot.model.Alarm;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.model.User;
 import lombok.Getter;
@@ -10,6 +11,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -52,11 +56,31 @@ public class Store {
         queueToProcess.add(Pair.of("", update));
     }
 
-    public static void createBirthday (User user) {
+    public static void createBirthday (User user, Long chatId) {
         Birthday birthday = new Birthday();
         birthday.setId(user.getId());
         birthday.setOwner(user);
+        birthday.setChatId(chatId);
         tempMap.put(user.getId(), birthday);
+    }
+
+    public static Alarm createAlarmFromBirthday(Birthday birthday) {
+        LocalDate today = LocalDate.now();
+
+        LocalDate birthdayDateThisYear = LocalDate.of(today.getYear(), birthday.getDate().getMonth(), birthday.getDate().getDayOfMonth());
+
+        LocalDate alarmDate = birthdayDateThisYear;
+        if (birthdayDateThisYear.isBefore(today)) {
+            alarmDate = birthdayDateThisYear.plusYears(1);
+        }
+
+        Instant alarmTime = alarmDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+        Alarm alarm = new Alarm();
+        alarm.setTime(alarmTime);
+        alarm.setBirthday(birthday);
+
+        return alarm;
     }
 
 

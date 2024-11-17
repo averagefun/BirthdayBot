@@ -1,5 +1,6 @@
 package com.birthdaybot.commands;
 
+import com.birthdaybot.exceptions.NoAdminRightsException;
 import com.birthdaybot.model.Birthday;
 import com.birthdaybot.services.DataService;
 import com.birthdaybot.utills.*;
@@ -24,6 +25,16 @@ public class ShowCommand extends BaseCommand {
         String s = executePair.getFirst();
         String[] arr = s.split(";");
         String text = arr[0];
+        String userLocate = dataService.getLanguageCode(userId);
+
+        boolean isGroupMode = dataService.getIsGroupMode(userId);
+        boolean isGroupAdmin = dataService.getIsGroupAdmin(userId);
+        Long groupId;
+        if (!isGroupMode) {
+            groupId = userId;
+        } else {
+            groupId = dataService.getGroupIdByUserId(userId);
+        }
         if (text.isEmpty()) {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
@@ -47,10 +58,13 @@ public class ShowCommand extends BaseCommand {
                 String command = arr[1];
                 Long id = Long.valueOf(arr[2]);
                 if(command.equals("remove")){
+                    if (!isGroupAdmin && isGroupMode) {
+                        throw new NoAdminRightsException(userId, userLocate);
+                    }
                     dataService.deleteBirthdayById(id);
                 }
             }
-            ArrayList<Birthday> allBirthdays = dataService.findBirthdaysByOwnerId(userId);
+            ArrayList<Birthday> allBirthdays = dataService.findBirthdaysByChatId(groupId);
             ArrayList<Birthday> birthdays = new ArrayList<>();
             for(Birthday b: allBirthdays){
                 if(b.getDate().getMonthValue()==month){
@@ -61,7 +75,7 @@ public class ShowCommand extends BaseCommand {
             EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
             editMessageReplyMarkup.setMessageId(getMessageId(update));
             editMessageReplyMarkup.setChatId(chatId);
-            InlineKeyboardMarkup inlineKeyboardMarkup = Keyboard.showKeyboardAdd(dataService.getLanguageCode(userId), birthdays, start, text);
+            InlineKeyboardMarkup inlineKeyboardMarkup = Keyboard.showKeyboardAdd(userLocate, birthdays, start, text);
             editMessageReplyMarkup.setReplyMarkup(inlineKeyboardMarkup);
             Store.addToSendQueue(editMessageReplyMarkup);
 

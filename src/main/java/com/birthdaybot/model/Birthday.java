@@ -24,6 +24,9 @@ public class Birthday {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Column(name = "chatId", nullable = false)
+    private Long chatId;
+
     @ManyToOne(cascade = CascadeType.ALL)
     private User owner;
 

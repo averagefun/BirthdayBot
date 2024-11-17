@@ -20,10 +20,12 @@ public interface BirthdayRepository extends JpaRepository<Birthday, Long> {
     @Query("select b from Birthday b where b.owner.id = ?1")
     ArrayList<Birthday> findBirthdaysByOwnerId(Long id);
 
+    @Query("select b from Birthday b where b.chatId = ?1")
+    ArrayList<Birthday> findBirthdaysByChatId(Long id);
+
     @Transactional
     @Modifying
     @Query("delete from Birthday b where b.id = ?1 ")
     void deleteById(Long id);
-
 
 }

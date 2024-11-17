@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Component
@@ -22,13 +24,20 @@ public class Scheduler {
         this.alarmService = alarmService;
     }
 
-    @Scheduled(cron = "0 0 * * * *") // Раз в час (каждый час точно в 00 минут)
+    @Scheduled(cron = "0 * * * * *") // Раз в час (каждый час точно в 00 минут)
     public void sendAlarms() {
         logger.info("Starting send alarm task ");
         List<Alarm> alarms = alarmService.findByTime(Instant.now());
         int sended = 0;
         for (Alarm alarm : alarms) {
-            Store.addToSendQueue(alarm.getBirthday().getOwner().getId(), alarm.getBirthday().getName());
+            String name = "Сегодня день рождения у "
+                    + alarm.getBirthday().getName()
+                    + " исполнилось "
+                    + calculateYearsAgo(alarm.getBirthday().getDate())
+                    + " "
+                    + getYearWord(calculateYearsAgo(alarm.getBirthday().getDate()))
+                    + ".";
+            Store.addToSendQueue(alarm.getBirthday().getChatId(), name);
             sended++;
             incrementYear(alarm);
         }
@@ -38,5 +47,27 @@ public class Scheduler {
     private void incrementYear(Alarm alarm) {
         alarm.setTime(alarm.getTime().plus(Duration.ofDays(365)));
         alarmService.save(alarm);
+    }
+
+    private long calculateYearsAgo(LocalDate date) {
+        LocalDate today = LocalDate.now();
+
+        return ChronoUnit.YEARS.between(date, today);
+    }
+
+    private String getYearWord(long years) {
+        long lastTwoDigits = years % 100;
+        long lastDigit = years % 10;
+
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+            return "лет";
+        }
+        if (lastDigit == 1) {
+            return "год";
+        }
+        if (lastDigit >= 2 && lastDigit <= 4) {
+            return "года";
+        }
+        return "лет";
     }
 }

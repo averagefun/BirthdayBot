@@ -18,10 +18,15 @@ public class EmojiConverter {
             Map.entry(' ', " ")
 
     );
-    public static String convertedString(String s){
-        StringBuilder emojiString= new StringBuilder();
-        for(char c:s.toCharArray()){
-            emojiString.append(emojiMap.get(c));
+
+    public static String convertedString(String s) {
+        StringBuilder emojiString = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            String emoji = emojiMap.get(c);
+            if (emoji == null) {
+                throw new NullPointerException("Unsupported character: " + c);
+            }
+            emojiString.append(emoji);
         }
         return emojiString.toString();
     }

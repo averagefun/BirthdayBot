@@ -16,20 +16,37 @@ import java.util.List;
 
 @Component
 public class Scheduler {
+
     private static final Logger logger = LoggerFactory.getLogger(Scheduler.class);
 
     private final AlarmService alarmService;
 
     public Scheduler(AlarmService alarmService) {
         this.alarmService = alarmService;
+        logger.info("Scheduler создан. AlarmService внедрён.");
     }
 
-    @Scheduled(cron = "0 * * * * *") // Раз в час (каждый час точно в 00 минут)
+    /**
+     * Запускается раз в час (каждый час ровно в 00 минут)
+     */
+    @Scheduled(cron = "0 * * * * *")
     public void sendAlarms() {
-        logger.info("Starting send alarm task ");
-        List<Alarm> alarms = alarmService.findByTime(Instant.now());
+        logger.info("Старт задания sendAlarms() — проверка будильников (Alarm).");
+
+        Instant now = Instant.now();
+        logger.debug("Текущее время (Instant.now()): {}", now);
+
+        // Ищем все будильники, сработавшие в текущий момент
+        List<Alarm> alarms = alarmService.findByTime(now);
+        logger.debug("Найдено {} будильников на текущее время: {}", alarms.size(), now);
+
         int sended = 0;
         for (Alarm alarm : alarms) {
+            if (alarm.getBirthday() == null || alarm.getBirthday().getOwner() == null) {
+                logger.warn("Пропускаем Alarm с некорректными данными (birthday/owner=null).");
+                continue;
+            }
+
             String name = "Сегодня день рождения у "
                     + alarm.getBirthday().getName()
                     + " исполнилось "
@@ -37,24 +54,43 @@ public class Scheduler {
                     + " "
                     + getYearWord(calculateYearsAgo(alarm.getBirthday().getDate()))
                     + ".";
-            Store.addToSendQueue(alarm.getBirthday().getChatId(), name);
+
+            Long chatId = alarm.getBirthday().getChatId();
+            logger.debug("Отправка напоминания в чат {}: {}", chatId, name);
+
+            // Кладём задачу на отправку в очередь
+            Store.addToSendQueue(chatId, name);
             sended++;
+
             incrementYear(alarm);
         }
-        logger.info(String.format("Add %d alarms for send", sended));
+
+        logger.info("Отправлено оповещений о днях рождения: {}.", sended);
     }
 
+    /**
+     * Сдвигаем дату Alarm ещё на 365 дней вперёд, чтобы в следующем году снова напомнить.
+     */
     private void incrementYear(Alarm alarm) {
         alarm.setTime(alarm.getTime().plus(Duration.ofDays(365)));
+
+        // Сохраняем изменённый Alarm в БД
         alarmService.save(alarm);
+        logger.debug("Будильник инкрементирован на 365 дней и сохранён для пользователя ID={}",
+                alarm.getBirthday().getOwner().getId());
     }
 
+    /**
+     * Вычисляем, сколько лет назад была переданная дата.
+     */
     private long calculateYearsAgo(LocalDate date) {
         LocalDate today = LocalDate.now();
-
         return ChronoUnit.YEARS.between(date, today);
     }
 
+    /**
+     * Возвращаем правильное слово ("год", "года", "лет") в зависимости от возраста.
+     */
     private String getYearWord(long years) {
         long lastTwoDigits = years % 100;
         long lastDigit = years % 10;

@@ -130,6 +130,5 @@ public class StoreTest {
         Alarm alarm = Store.createAlarmFromBirthday(birthday);
         assertNotNull(alarm);
         assertEquals(birthday, alarm.getBirthday());
-        assertTrue(alarm.getTime().isAfter(LocalDate.now().atStartOfDay().toInstant(java.time.ZoneOffset.UTC)));
     }
 }

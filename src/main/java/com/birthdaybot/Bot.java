@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,7 +24,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -33,11 +33,10 @@ import java.util.concurrent.Executors;
 
 import static com.birthdaybot.utills.localization.TextProviderImpl.localizate;
 
-
 @Slf4j
 @Component
-@Scope("singleton")//default
-@PropertySource("classpath:application.properties")//default
+@Scope("singleton") // default
+@PropertySource("classpath:application.properties") // default
 public class Bot extends TelegramLongPollingBot {
 
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -90,64 +89,85 @@ public class Bot extends TelegramLongPollingBot {
 
     public Bot(@Value("${telegram.bot.token}") String botToken) {
         super(botToken);
+        log.info("Bot bean создан. Bot token получен.");
     }
 
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
+        // Логируем сам Update (полезно для отладки, хотя userId может пока быть неизвестен)
+        log.debug("Получен Update: {}", update);
+
+        // Если в апдейте есть сообщение
         Message message = update.getMessage();
         try {
-
             if (message != null && message.hasText()) {
-                Long userId = update.getMessage().getFrom().getId();
-                Long chatId = update.getMessage().getChatId();
-                log.info(update.getMessage().getFrom().getUserName() + " " + update.getMessage().getText());
+                Long userId = message.getFrom().getId();
+                Long chatId = message.getChatId();
+                String userName = message.getFrom().getUserName();
+
+                // Логируем текст сообщения, userId и userName
+                log.info("Пользователь [{}] (ID: {}) отправил сообщение: '{}'",
+                        userName, userId, message.getText());
+
                 if (userId.equals(chatId)) {
+                    // Личная переписка
                     switch (message.getText()) {
-                        case "/start":
+                        case "/start" -> {
+                            log.debug("Команда /start (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             startCommand.execute(dataService);
-                            break;
+                        }
                         case "/add", "Добавить день рождения \uD83D\uDEAE", "Add a birthday \uD83D\uDEAE",
-                             "✍ \uD83C\uDD95 \uD83D\uDC23":
+                                "✍ \uD83C\uDD95 \uD83D\uDC23" -> {
+                            log.debug("Команда /add (userId: {})", userId);
                             dataService.updateStatusById(Status.BASE, userId);
                             Store.addToProcessQueue(update);
                             addCommand.execute(dataService);
-                            break;
+                        }
                         case "/lang", "Язык \ud83c\uddf7\ud83c\uddfa", "Language \ud83c\uddec\ud83c\udde7",
-                             "♻ \ud83d\ude00":
+                                "♻ \ud83d\ude00" -> {
+                            log.debug("Команда /lang (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             chooseLangCommand.execute(dataService);
-                            break;
+                        }
                         case "/show", "Показать дни рождения \uD83D\uDC41", "Show birthdays \uD83D\uDC41",
-                             "\uD83D\uDD22 \uD83C\uDF10 \uD83C\uDF82":
+                                "\uD83D\uDD22 \uD83C\uDF10 \uD83C\uDF82" -> {
+                            log.debug("Команда /show (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             showCommand.execute(dataService);
-                            break;
-                        case "/settings", "Настройки ⚙️", "Settings ⚙️", "⚙️":
+                        }
+                        case "/settings", "Настройки ⚙️", "Settings ⚙️", "⚙️" -> {
+                            log.debug("Команда /settings (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             settingsCommand.execute(dataService);
-                            break;
-                        case "/back", "Назад \uD83D\uDD19", "Back \uD83D\uDD19", "\uD83D\uDD19":
+                        }
+                        case "/back", "Назад \uD83D\uDD19", "Back \uD83D\uDD19", "\uD83D\uDD19" -> {
+                            log.debug("Команда /back (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             backCommand.execute(dataService);
-                            break;
-                        case "Back to user mode \uD83D\uDD19", "Выйти из режима группы \uD83D\uDD19", "\uD83D\uDC6A\uD83D\uDD19":
+                        }
+                        case "Back to user mode \uD83D\uDD19", "Выйти из режима группы \uD83D\uDD19", "\uD83D\uDC6A\uD83D\uDD19" -> {
+                            log.debug("Команда 'Back to user mode' (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             backToUserModeCommand.execute(dataService);
-                            break;
-                        case "/share", "Поделиться ➡", "Share ➡", "\uD83E\uDD1D ↖️":
+                        }
+                        case "/share", "Поделиться ➡", "Share ➡", "\uD83E\uDD1D ↖️" -> {
+                            log.debug("Команда /share (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             shareCommand.execute(dataService);
-                            break;
-                        case "/time", "Часовой пояс \uD83D\uDD51", "Time zone \uD83D\uDD51", "\uD83D\uDD51":
+                        }
+                        case "/time", "Часовой пояс \uD83D\uDD51", "Time zone \uD83D\uDD51", "\uD83D\uDD51" -> {
+                            log.debug("Команда /time (userId: {})", userId);
                             Store.addToProcessQueue(update);
                             timeZoneCommand.execute(dataService);
-                            break;
-                        case "/info", "Инфо ℹ", "Info ℹ", "ℹ":
+                        }
+                        case "/info", "Инфо ℹ", "Info ℹ", "ℹ" -> {
+                            log.debug("Команда /info (userId: {})", userId);
                             Store.addToSendQueue(chatId, "in process");
-                            break;
-                        default:
+                        }
+                        default -> {
+                            log.debug("Неизвестная команда (userId: {}). Проверяем статус пользователя...", userId);
                             switch (dataService.getStatus(userId)) {
                                 case BASE -> {
                                     Store.addToSendQueue(chatId, "no command");
@@ -161,105 +181,138 @@ public class Bot extends TelegramLongPollingBot {
                                     timeZoneCommand.execute(dataService);
                                 }
                             }
+                        }
                     }
                 } else {
+                    // Обработка группового чата
+                    log.debug("Обработка запроса в групповом чате: {}, userId: {}", chatId, userId);
+
                     List<ChatMember> admins = execute(new GetChatAdministrators(chatId.toString()));
                     boolean isAdmin = admins.stream()
                             .anyMatch(admin -> admin.getUser().getId().equals(userId));
+
                     switch (message.getText()) {
-                        case "/add@BirthdayRemind_bot", "/show@BirthdayRemind_bot":
+                        case "/add@BirthdayRemind_bot", "/show@BirthdayRemind_bot" -> {
+                            log.debug("Групповой режим. Проверяем права администратора (userId: {}, isAdmin: {})",
+                                    userId, isAdmin);
                             Store.addToProcessQueue(Boolean.toString(isAdmin), update);
                             setGroupMode.execute(dataService);
+                        }
+                        default -> {
+                            log.debug("Неизвестная команда в групповом чате (userId: {}): '{}'",
+                                    userId, message.getText());
+                        }
                     }
                 }
 
             } else if (update.hasCallbackQuery()) {
+                // Обработка нажатия inline-кнопок
                 Long userId = update.getCallbackQuery().getFrom().getId();
                 Long chatId = update.getCallbackQuery().getMessage().getChatId();
                 String text = update.getCallbackQuery().getData();
                 String[] s = text.split(";");
                 String data = s[0];
-                Store.addToProcessQueue(text,update);
+
+                log.info("CallbackQuery от userId: {}. Data: {}", userId, text);
+
+                Store.addToProcessQueue(text, update);
+
                 switch (data) {
-                    case "setRussian", "setEnglish", "setEmoji":
+                    case "setRussian", "setEnglish", "setEmoji" -> {
+                        log.debug("Callback смена языка (userId: {}, data: {})", userId, data);
                         chooseLangCommand.execute(dataService);
                         deleteMessage(update.getCallbackQuery().getMessage());
-                        break;
-                    case "backToCalendar","showJanuary", "showFebruary", "showMarch", "showApril", "showMay", "showJune", "showJuly", "showAugust", "showSeptember", "showOctober", "showNovember", "showDecember": {
+                    }
+                    case "backToCalendar", "showJanuary", "showFebruary", "showMarch", "showApril", "showMay",
+                            "showJune", "showJuly", "showAugust", "showSeptember", "showOctober", "showNovember",
+                            "showDecember" -> {
+                        log.debug("Callback работа с календарем (userId: {}, data: {})", userId, data);
                         showCommand.execute(dataService);
-                        break;
+                    }
+                    default -> {
+                        log.debug("Необработанный callback (userId: {}, data: {})", userId, data);
                     }
                 }
             }
-        }catch (NoAdminRightsException e){
-            SendMessage error = new SendMessage(e.getUserId().toString(), localizate("noAdminError", e.getUserLocate()));
+        } catch (NoAdminRightsException e) {
+            log.error("Ошибка прав администратора (userId: {}): {}", e.getUserId(), e.getMessage());
+            SendMessage error = new SendMessage(e.getUserId().toString(),
+                    localizate("noAdminError", e.getUserLocate()));
             Store.addToSendQueue(error);
+        } catch (TelegramApiException te) {
+            log.error("Ошибка при работе с Telegram API: ", te);
+        } catch (Exception ex) {
+            log.error("Неизвестная ошибка: ", ex);
         }
-
     }
 
     private void deleteMessage(Message message) {
+        log.debug("Удаление сообщения [{}] из чата [{}] (userId: {})",
+                message.getMessageId(), message.getChatId(),
+                message.getFrom() != null ? message.getFrom().getId() : "unknown");
         DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setMessageId(message.getMessageId());
         deleteMessage.setChatId(message.getChatId());
         Store.addToSendQueue(deleteMessage);
     }
 
-
-
     @PostConstruct
     private void sendMessage() {
+        log.info("Запуск отдельного потока для отправки сообщений...");
         new Thread(() -> {
             ExecutorService executorService = Executors.newFixedThreadPool(5);
             while (true) {
                 try {
                     Pair<Long, Object> sendPair = Store.getQueueToSend().take();
+                    log.debug("Получен объект для отправки: чат = {}, объект = {}",
+                            sendPair.getFirst(), sendPair.getSecond());
                     executorService.execute(() -> {
                         Object o = sendPair.getSecond();
                         if (o.getClass() == SendMessage.class) {
-                            SendMessage NewsendMessage = (SendMessage) sendPair.getSecond();
-                            NewsendMessage.setChatId(sendPair.getFirst());
+                            SendMessage newSendMessage = (SendMessage) o;
+                            newSendMessage.setChatId(sendPair.getFirst());
                             try {
-                                execute(NewsendMessage);
+                                log.debug("Отправка SendMessage в чат [{}]", sendPair.getFirst());
+                                execute(newSendMessage);
                             } catch (TelegramApiException e) {
+                                log.error("Ошибка при отправке SendMessage: ", e);
                                 throw new RuntimeException(e);
                             }
                         } else if (o.getClass() == EditMessageReplyMarkup.class) {
-                            EditMessageReplyMarkup editMessageReplyMarkup = (EditMessageReplyMarkup) sendPair.getSecond();
+                            EditMessageReplyMarkup editMessageReplyMarkup = (EditMessageReplyMarkup) o;
                             editMessageReplyMarkup.setChatId(sendPair.getFirst());
                             try {
+                                log.debug("Отправка EditMessageReplyMarkup в чат [{}]", sendPair.getFirst());
                                 execute(editMessageReplyMarkup);
                             } catch (TelegramApiException e) {
+                                log.error("Ошибка при отправке EditMessageReplyMarkup: ", e);
                                 throw new RuntimeException(e);
                             }
-                        }else if (o.getClass() == DeleteMessage.class) {
-                            DeleteMessage deleteMessage = (DeleteMessage) sendPair.getSecond();
+                        } else if (o.getClass() == DeleteMessage.class) {
+                            DeleteMessage deleteMessage = (DeleteMessage) o;
                             deleteMessage.setChatId(sendPair.getFirst());
                             try {
+                                log.debug("Отправка DeleteMessage в чат [{}]", sendPair.getFirst());
                                 execute(deleteMessage);
                             } catch (TelegramApiException e) {
+                                log.error("Ошибка при удалении сообщения: ", e);
                                 throw new RuntimeException(e);
                             }
                         }
                     });
-
                 } catch (InterruptedException e) {
+                    log.error("Поток отправки сообщений прерван.", e);
                     executorService.shutdown();
                     break;
                 } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    log.error("Send message error");
+                    log.error("Ошибка при выполнении задачи отправки сообщений: ", e);
                 }
             }
         }).start();
     }
 
-
-
-
     @Override
     public String getBotUsername() {
         return botUsername;
     }
-
 }
